@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+	layout:decorator="layout2">
+
+<section layout:fragment="content">
+
+	<div class="row">
+		<div class="col">
+			<div class="card" align="center">
+				<div th:if="${info}">
+					<p th:text="${info}"></p>
+				</div>
+				<div class="icon">
+					<i class="icon-user"></i>
+				</div>
+			</div>
+			<hr>
+				<table class="table">
+					<thead class="thead-dark">
+						<tr>
+							<th>Name</th>
+							<th>Type</th>
+							<th>Country</th>
+							<th>City</th>
+							<th>Street</th>
+							<th>Price</th>
+							<th>Area</th>
+							<th>Capacity</th>
+							<th>When?</th>
+							<th>PDF</th>
+						</tr>
+					</thead>
+					<th:block th:each="room,iterStat : ${rooms}">
+						<tr>
+							<td th:text="${room.name}"> Username</td>
+							<td th:text="${room.type}"> Type</td>
+							<td th:text="${room.localization.country}">Frist name</td>
+							<td th:text="${room.localization.city}">Last name</td>
+							<td th:text="${room.localization.street}">Created</td>
+							<td th:text="${room.price}">Price</td>
+							<td th:text="${room.area}">Area</td>
+							<td th:text="${room.capacity}">Capacity</td>
+							<td th:text="${date[iterStat.index].start}+' - '+${date[iterStat.index].end}">Time</td>
+							<td><a th:href="@{'/user/rooms/printPDF/{roomId}/{dateId}' (roomId=${room.Id}, dateId=${date[iterStat.index].id})}" th:text="'Print PDF'">PDF</a> </td>
+						</tr>
+					</th:block>
+				</table>
+			</div>
+		</div>
+</section>
+</html>

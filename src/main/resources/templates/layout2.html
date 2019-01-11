@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Room Booking</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="all,follow">
+    <!-- Bootstrap CSS-->
+    <link rel="stylesheet" th:href="@{/vendor/bootstrap/css/bootstrap.min.css}">
+    <!-- Font Awesome CSS-->
+    <link rel="stylesheet"
+          th:href="@{/vendor/font-awesome/css/font-awesome.min.css}">
+    <!-- Fontastic Custom icon font-->
+    <link rel="stylesheet" th:href="@{/css/fontastic.css}">
+    <!-- Google fonts - Roboto -->
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700">
+    <!-- jQuery Circle-->
+    <link rel="stylesheet"
+          th:href="@{/css/grasp_mobile_progress_circle-1.0.0.min.css}">
+    <!-- Custom Scrollbar-->
+    <link rel="stylesheet"
+          th:href="@{/vendor/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.css}">
+    <!-- theme stylesheet-->
+    <link rel="stylesheet" th:href="@{/css/style.default.css}"
+          id="theme-stylesheet">
+    <!-- Custom stylesheet - for your changes-->
+    <link rel="stylesheet" th:href="@{/css/custom.css}">
+    <!-- Favicon-->
+    <link rel="shortcut icon" th:href="@{/img/favicon.ico}">
+    <!-- Tweaks for older IEs-->
+</head>
+<body>
+<!-- Side Navbar -->
+<nav class="side-navbar">
+    <div class="side-navbar-wrapper">
+        <!-- Sidebar Header    -->
+        <div
+                class="sidenav-header d-flex align-items-center justify-content-center">
+            <!-- User Info-->
+            <div class="sidenav-header-inner text-center">
+                <div th:if="${currUser?.image?.path}">
+                    <img th:src="@{${currUser.image.path}}" alt="avatar"
+                         class="img-fluid rounded-circle"></div>
+                <!-- role authentication --> <h2 class="h5" sec:authentication="name">Anderson Hardy</h2>
+                <span th:text="${currUser?.role} ? 'as ' + ${currUser.role.subName} : 'Anonymous'">Web Developer</span>
+            </div>
+            <!-- Small Brand information, appears on minimized sidebar-->
+            <div class="sidenav-header-logo">
+                <a href="/" class="brand-small text-center"> <strong>B</strong><strong
+                        class="text-primary">D</strong></a>
+            </div>
+        </div>
+        <!-- Sidebar Navigation Menus-->
+        <div class="main-menu">
+            <h5 class="sidenav-heading">Principal</h5>
+            <ul id="side-main-menu" class="side-menu list-unstyled">
+                <li><a href="/"> <i class="icon-home"></i>Inicio</a></li>
+                <li><a th:href="@{/user/profile}"> <i class="icon-form"></i>Perfil</a>
+                <li th:if="${currUser?.role !=null and currUser.role.subName == 'Owner'}"><a th:href="@{/owner/offer}">
+                    <i class="icon-form"></i>Añadir oferta</a>
+                <li th:if="${currUser?.role !=null and currUser.role.subName == 'Owner'}"><a th:href="@{/owner/rooms}">
+                    <i class="icon-form"></i>Mostrar mis ofertas</a>
+                <li th:if="${currUser?.role !=null and currUser.role.subName == 'Manager'}"><a
+                        th:href="@{/manager/hotels}"> <i class="icon-form"></i>Mostrar mis hoteles</a>
+                <li th:if="${currUser?.role !=null and currUser.role.subName == 'Admin'}"><a
+                        th:href="@{/admin/requests}"> <i class="icon-form"></i>Mostrar solicitudes</a>
+                <li><a th:href="@{/user/rooms}"> <i class="icon-form"></i>Mostrar mis reservas</a>
+                <li><a th:href="@{/user/chat}"> <i class="icon-form"></i>Chat</a>
+                <li><a th:href="@{/book}"> <i class="icon-form"></i>Buscar la habitacion</a>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="page">
+    <!-- navbar-->
+    <header class="header">
+        <nav class="navbar">
+            <div class="container-fluid">
+                <div
+                        class="navbar-holder d-flex align-items-center justify-content-between">
+                    <div class="navbar-header">
+                        <a id="toggle-btn" href="#" class="menu-btn"><i
+                                class="icon-bars"> </i></a><a href="/" class="navbar-brand">
+                        <div class="brand-text d-none d-md-inline-block">
+                            <strong class="text-primary">Reserva tu habitación</strong>
+                        </div>
+                    </a>
+                    </div>
+                    <ul
+                            class="nav-menu list-unstyled d-flex flex-md-row align-items-md-center">
+                        <li class="nav-item dropdown"><a id="notifications"
+                                                         rel="nofollow" data-target="#" href="#" data-toggle="dropdown"
+                                                         aria-haspopup="true" aria-expanded="false" class="nav-link"><i
+                                class="fa fa-bell"></i><span class="badge badge-warning">12</span></a>
+                            <ul aria-labelledby="notifications" class="dropdown-menu">
+                                <li><a rel="nofollow" href="#" class="dropdown-item">
+                                    <div class="notification d-flex justify-content-between">
+                                        <div class="notification-content">
+                                            <i class="fa fa-envelope"></i>Tienes 6 mensajes nuevos
+                                        </div>
+                                        <div class="notification-time">
+                                            <small>4 minutes ago</small>
+                                        </div>
+                                    </div>
+                                </a></li>
+                                <li><a rel="nofollow" href="#" class="dropdown-item">
+                                    <div class="notification d-flex justify-content-between">
+                                        <div class="notification-content">
+                                            <i class="fa fa-twitter"></i>Tienes 2 seguidores
+                                        </div>
+                                        <div class="notification-time">
+                                            <small>4 minutes ago</small>
+                                        </div>
+                                    </div>
+                                </a></li>
+                                <li><a rel="nofollow" href="#" class="dropdown-item">
+                                    <div class="notification d-flex justify-content-between">
+                                        <div class="notification-content">
+                                            <i class="fa fa-upload"></i>Servidor reiniciado
+                                        </div>
+                                        <div class="notification-time">
+                                            <small>4 minutes ago</small>
+                                        </div>
+                                    </div>
+                                </a></li>
+                                <li><a rel="nofollow" href="#" class="dropdown-item">
+                                    <div class="notification d-flex justify-content-between">
+                                        <div class="notification-content">
+                                            <i class="fa fa-twitter"></i>Tienes 2 seguidores
+                                        </div>
+                                        <div class="notification-time">
+                                            <small>10 minutes ago</small>
+                                        </div>
+                                    </div>
+                                </a></li>
+                                <li><a rel="nofollow" href="#"
+                                       class="dropdown-item all-notifications text-center"> <strong>
+                                    <i class="fa fa-bell"></i>ver todas las notificaciones
+                                </strong></a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown"><a id="messages"
+                                                         rel="nofollow" data-target="#" href="#" data-toggle="dropdown"
+                                                         aria-haspopup="true" aria-expanded="false" class="nav-link"><i
+                                class="fa fa-envelope"></i><span class="badge badge-info">10</span></a>
+                            <ul aria-labelledby="notifications" class="dropdown-menu">
+                                <li><a rel="nofollow" href="#"
+                                       class="dropdown-item d-flex">
+                                    <div class="msg-profile">
+                                        <img src="img/avatar-2.jpg" alt="..."
+                                             class="img-fluid rounded-circle">
+                                    </div>
+                                    <div class="msg-body">
+                                        <h3 class="h5">Salome Ochoa</h3>
+                                        <span>te envié un mensaje directo</span>
+                                        <small>Hoy 7:58 pm - 10-06-2014
+                                        </small>
+                                    </div>
+                                </a></li>
+                                <li><a rel="nofollow" href="#"
+                                       class="dropdown-item all-notifications text-center"> <strong>
+                                    <i class="fa fa-envelope"></i>Leer todos los mensajes
+                                </strong></a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                        <li class="nav-item"
+                            sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_USER','ROLE_MANAGER', 'ROLE_OWNER')">
+                            <form th:action="@{/logout}"
+                                  method="post">
+                                <button type="submit" class="nav-link logout"
+                                        style="color: white; background-color: #393836; margin-left: 5px;"
+                                        class="logout">cerrar sesión<i class="fa fa-sign-out"></i>
+                                </button>
+                            </form>
+                        </li>
+                        <li class="nav-item">
+                            <!--login  -->
+                        <li class="nav-item" sec:authorize="hasRole('ROLE_ANONYMOUS')">
+                            <form th:action="@{/login}"
+                                  method="post">
+                                <button type="submit" class="login"
+                                        style="color: white; background-color: #393836; margin-left: 5px;">
+                                    Login <i class="fa fa-sign-in"></i>
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <!-- Counts Section -->
+    <!-- Header Section-->
+    <section class="dashboard-header section-padding">
+        <div class="container-fluid">
+            <section layout:fragment="content"></section>
+        </div>
+    </section>
+    <!-- Statistics Section-->
+    <!-- Updates Section -->
+    <section class="mt-30px mb-30px">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-4 col-md-12">
+                    <!-- Recent Updates Widget          -->
+                    <div id="new-updates" class="card updates recent-updated">
+                        <div id="updates-header"
+                             class="card-header d-flex justify-content-between align-items-center">
+                            <h2 class="h5 display">
+                                <a data-toggle="collapse" data-parent="#new-updates"
+                                   href="#updates-box" aria-expanded="true"
+                                   aria-controls="updates-box">Actualización de las noticias</a>
+                            </h2>
+                            <a data-toggle="collapse" data-parent="#new-updates"
+                               href="#updates-box" aria-expanded="true"
+                               aria-controls="updates-box"><i class="fa fa-angle-down"></i></a>
+                        </div>
+                        <div id="updates-box" role="tabpanel" class="collapse show">
+                            <ul class="news list-unstyled">
+                                <!-- Item-->
+                                <li class="d-flex justify-content-between">
+                                    <div class="left-col d-flex">
+                                        <div class="icon">
+                                            <i class="icon-rss-feed"></i>
+                                        </div>
+                                        <div class="title">
+                                            <strong>Lorem ipsum dolor sit amet.</strong>
+                                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing
+                                                elit, sed do eiusmod tempor.</p>
+                                        </div>
+                                    </div>
+                                    <div class="right-col text-right">
+                                        <div class="update-date">
+                                            24<span class="month">Junio</span>
+                                        </div>
+                                    </div>
+                                </li>
+                                <!-- Item-->
+                                <li class="d-flex justify-content-between">
+                                    <div class="left-col d-flex">
+                                        <div class="icon">
+                                            <i class="icon-rss-feed"></i>
+                                        </div>
+                                        <div class="title">
+                                            <strong>Lorem ipsum dolor sit amet.</strong>
+                                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing
+                                                elit, sed do eiusmod tempor.</p>
+                                        </div>
+                                    </div>
+                                    <div class="right-col text-right">
+                                        <div class="update-date">
+                                            24<span class="month">Junio</span>
+                                        </div>
+                                    </div>
+                                </li>
+                                <!-- Item-->
+                                <!-- Item-->
+                                <!-- Item-->
+                                <!-- Item-->
+                            </ul>
+                        </div>
+                    </div>
+                    <!-- Recent Updates Widget End-->
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <!-- Daily Feed Widget-->
+                    <div id="daily-feeds" class="card updates daily-feeds">
+                        <div id="feeds-header"
+                             class="card-header d-flex justify-content-between align-items-center">
+                            <h2 class="h5 display">
+                                <a data-toggle="collapse" data-parent="#daily-feeds"
+                                   href="#feeds-box" aria-expanded="true"
+                                   aria-controls="feeds-box">Noticias diarias</a>
+                            </h2>
+                            <div class="right-column">
+                                <div class="badge badge-primary">10 messages</div>
+                                <a data-toggle="collapse" data-parent="#daily-feeds"
+                                   href="#feeds-box" aria-expanded="true"
+                                   aria-controls="feeds-box"><i class="fa fa-angle-down"></i></a>
+                            </div>
+                        </div>
+                        <div id="feeds-box" role="tabpanel" class="collapse show">
+                            <div class="feed-box">
+                                <ul class="feed-elements list-unstyled">
+                                    <!-- List-->
+                                    <li class="clearfix">
+                                        <div class="feed d-flex justify-content-between">
+                                            <div class="feed-body d-flex justify-content-between">
+                                                <!--<a href="#" class="feed-profile">
+                                                    <img src="img/avatar-5.jpg" alt="person"
+                                                         class="img-fluid rounded-circle"></a>-->
+                                                <div class="content">
+                                                    <strong>Natalia Rojas</strong>
+                                                    <small>Nuevo blog
+                                                    </small>
+                                                    <div class="full-date">
+                                                        <small>Hoy 5:60 pm - 12-06-2014</small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="date">
+                                                <small>5min agosto</small>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <!-- List-->
+                                    <li class="clearfix">
+                                        <div class="feed d-flex justify-content-between">
+                                            <div class="feed-body d-flex justify-content-between">
+                                                <a href="#" class="feed-profile">
+                                                    <img src="img/avatar-2.jpg" alt="person" style="display:none"
+                                                         class="img-fluid rounded-circle"></a>
+                                                <div class="content">
+                                                    <strong>John Ochoa</strong>
+                                                    <small>Nuevo blog</small>
+                                                    <div class="full-date">
+                                                        <small>Hoy 5:60 pm - 12-06-2014</small>
+                                                    </div>
+                                                    <div class="CTAs">
+                                                        <a href="#" class="btn btn-xs btn-dark"><i
+                                                                class="fa fa-thumbs-up"> </i>Like</a><a href="#"
+                                                                                                        class="btn btn-xs btn-dark"><i
+                                                            class="fa fa-heart">
+                                                    </i>Love</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="date">
+                                                <small>5min agosto</small>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <!-- List-->
+                                    <!-- List-->
+                                    <!-- List-->
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Daily Feed Widget End-->
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <!-- Recent Activities Widget      -->
+                    <div id="recent-activities-wrapper"
+                         class="card updates activities">
+                        <div id="activites-header"
+                             class="card-header d-flex justify-content-between align-items-center">
+                            <h2 class="h5 display">
+                                <a data-toggle="collapse"
+                                   data-parent="#recent-activities-wrapper"
+                                   href="#activities-box" aria-expanded="true"
+                                   aria-controls="activities-box">Actividades recientes</a>
+                            </h2>
+                            <a data-toggle="collapse"
+                               data-parent="#recent-activities-wrapper" href="#activities-box"
+                               aria-expanded="true" aria-controls="activities-box"><i
+                                    class="fa fa-angle-down"></i></a>
+                        </div>
+                        <div id="activities-box" role="tabpanel" class="collapse show">
+                            <ul class="activities list-unstyled">
+                                <!-- Item-->
+                                <li>
+                                    <div class="row">
+                                        <div class="col-4 date-holder text-right">
+                                            <div class="icon">
+                                                <i class="icon-clock"></i>
+                                            </div>
+                                            <div class="date">
+                                                <span>6:00 am</span><span class="text-info">6 horas agosto</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-8 content">
+                                            <strong>Reunion</strong>
+                                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing
+                                                elit, sed do eiusmod tempor incididunt ut labore et dolore
+                                                magna aliqua. Ut enim ad minim veniam, quis nostrud.</p>
+                                        </div>
+                                    </div>
+                                </li>
+                                <!-- Item-->
+                                <!-- Item-->
+                                <!-- Item-->
+
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <footer class="main-footer">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm-6">
+                    <p>Your company &copy; 2017-2019</p>
+                </div>
+                <div class="col-sm-6 text-right">
+                    <p>
+                        Design by <a href="https://bootstrapious.com" class="external">Bootstrapious</a>
+                    </p>
+                    <!-- Please do not remove the backlink to us unless you support further theme's development at https://bootstrapious.com/donate. It is part of the license conditions. Thank you for understanding :)-->
+                </div>
+            </div>
+        </div>
+    </footer>
+</div>
+<!-- Javascript files-->
+<script th:src="@{/vendor/jquery/jquery.min.js}"></script>
+<script>
+
+
+    $('.logout').click(function (e) {
+        var result = confirm("¿Estás seguro de que quieres cerrar sesión?");
+        if (!result) {
+            // Stop the link from working.
+            e.preventDefault();
+        }
+    });
+
+</script>
+<script th:src="@{/vendor/popper.js/umd/popper.min.js}">
+
+</script>
+<script th:src="@{/vendor/bootstrap/js/bootstrap.min.js}"></script>
+<script th:src="@{/js/grasp_mobile_progress_circle-1.0.0.min.js}"></script>
+<script th:src="@{/vendor/jquery.cookie/jquery.cookie.js}">
+
+</script>
+<script th:src="@{/vendor/chart.js/Chart.min.js}"></script>
+<script th:src="@{/vendor/jquery-validation/jquery.validate.min.js}"></script>
+<script
+        th:src="@{/vendor/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.concat.min.js}"></script>
+<script th:src="@{/js/charts-home.js}"></script>
+<!-- Main File-->
+<script th:src="@{/js/front.js}"></script>
+</body>
+</html>
